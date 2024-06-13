@@ -1,4 +1,11 @@
+import Tasks from "./components/Tasks";
+
 function App() {
+  let tasks = [
+    { id: 1, title: "Task 1", completed: false },
+    { id: 2, title: "Task 2", completed: true },
+    { id: 3, title: "Task 3", completed: false },
+  ];
   return (
     <div className="">
       <h1 className="text-center bg-blue-600 font-bold text-3xl py-6 text-white">
@@ -21,17 +28,7 @@ function App() {
         </div>
         <div className="mt-6">
           <ul>
-            <li className="flex justify-between items-center p-2 border-b border-gray-300">
-              <span>Todo 1</span>
-              <div className="flex gap-2">
-                <button className="bg-blue-600 text-white p-2 rounded hover:bg-blue-700">
-                  Edit
-                </button>
-                <button className="bg-red-600 text-white p-2 rounded hover:bg-red-700">
-                  Delete
-                </button>
-              </div>
-            </li>
+            <Tasks tasks={tasks} />
           </ul>
         </div>
       </div>
