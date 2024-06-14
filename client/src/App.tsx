@@ -16,6 +16,56 @@ function App() {
   const [taskTitle, setTaskTitle] = useState("");
   const [taskDescription, setTaskDescription] = useState("");
 
+  const addTask = async () => {
+    try {
+      const newTask: TaskProps = {
+        id: Date.now(),
+        title: taskTitle,
+        description: taskDescription,
+        completed: false,
+      };
+
+      const response = await fetch("http://localhost:3000/tasks", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newTask),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to add task.");
+      }
+
+      // Update local state if needed (e.g., if your backend returns the new task with an ID)
+      const data = await response.json();
+      setTasks([...tasks, data]); // Or adjust based on your API's response
+
+      setTaskTitle("");
+      setTaskDescription("");
+    } catch (error) {
+      console.error("Error adding task:", error);
+      // Handle errors, e.g., show an error message to the user
+    }
+  };
+
+  const deleteTask = async (id: number) => {
+    try {
+      const response = await fetch(`http://localhost:3000/tasks/${id}`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to delete task.");
+      }
+
+      setTasks(tasks.filter((task) => task.id !== id));
+    } catch (error) {
+      console.error("Error deleting task:", error);
+      // Handle errors, e.g., show an error message to the user
+    }
+  }
+
   useEffect(() => {
     const fetchTasks = async () => {
       try {
@@ -51,17 +101,18 @@ function App() {
               type="text"
               className="w-full border border-gray-300 rounded p-2"
               placeholder="Add todo"
+              onChange={(e) => setTaskTitle(e.target.value)}
             />
           </div>
           <div className="">
-            <button className="bg-blue-600 text-white p-2 rounded w-full px-4 hover:bg-blue-700">
+            <button className="bg-blue-600 text-white p-2 rounded w-full px-4 hover:bg-blue-700" onClick={addTask}>
               Add
             </button>
           </div>
         </div>
         <div className="mt-6">
           <ul>
-            <Tasks tasks={tasks} />
+            <Tasks tasks={tasks} onDelete={deleteTask}/>
           </ul>
         </div>
       </div>
