@@ -1,11 +1,44 @@
+import { useState, useEffect } from "react";
 import Tasks from "./components/Tasks";
 
+interface TaskProps {
+  id: number;
+  title: string;
+  description?: string; // Optional description
+  completed: boolean;
+}
+
 function App() {
-  let tasks = [
-    { id: 1, title: "Task 1", completed: false },
-    { id: 2, title: "Task 2", completed: true },
-    { id: 3, title: "Task 3", completed: false },
-  ];
+  const [tasks, setTasks] = useState<TaskProps[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const [taskTitle, setTaskTitle] = useState("");
+  const [taskDescription, setTaskDescription] = useState("");
+
+  useEffect(() => {
+    const fetchTasks = async () => {
+      try {
+        const response = await fetch("http://localhost:3000/tasks");
+        if (!response.ok) {
+          throw new Error("Network response was not ok.");
+        }
+        const data = await response.json();
+        setTasks(data);
+      } catch (error) {
+        setError("Error fetching tasks");
+        console.error("Error fetching tasks:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchTasks();
+  }, []);
+
+  if (isLoading) return <p>Loading tasks...</p>;
+  if (error) return <p>{error}</p>;
+
   return (
     <div className="">
       <h1 className="text-center bg-blue-600 font-bold text-3xl py-6 text-white">
