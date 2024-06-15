@@ -2,10 +2,10 @@ import { useState, useEffect } from "react";
 import Tasks from "./components/Tasks";
 
 interface TaskProps {
-  id: number;
+  _id: string;
   title: string;
   description?: string; // Optional description
-  completed: boolean;
+  status: "pending" | "completed";
 }
 
 function App() {
@@ -19,13 +19,13 @@ function App() {
   const addTask = async () => {
     try {
       const newTask: TaskProps = {
-        id: Date.now(),
+        _id: Date.now().toString(),
         title: taskTitle,
         description: taskDescription,
-        completed: false,
+        status: "pending",
       };
 
-      const response = await fetch("http://localhost:3000/tasks", {
+      const response = await fetch("http://localhost:3000/api/tasks", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -34,7 +34,7 @@ function App() {
       });
 
       if (!response.ok) {
-        throw new Error("Failed to add task.");
+        console.log(new Error("Failed to add task"));
       }
 
       // Update local state if needed (e.g., if your backend returns the new task with an ID)
@@ -49,9 +49,9 @@ function App() {
     }
   };
 
-  const deleteTask = async (id: number) => {
+  const deleteTask = async (id: string) => {
     try {
-      const response = await fetch(`http://localhost:3000/tasks/${id}`, {
+      const response = await fetch(`http://localhost:3000/api/tasks/${id}`, {
         method: "DELETE",
       });
 
@@ -59,7 +59,7 @@ function App() {
         throw new Error("Failed to delete task.");
       }
 
-      setTasks(tasks.filter((task) => task.id !== id));
+      setTasks(tasks.filter((task) => task._id !== id));
     } catch (error) {
       console.error("Error deleting task:", error);
       // Handle errors, e.g., show an error message to the user
@@ -69,9 +69,9 @@ function App() {
   useEffect(() => {
     const fetchTasks = async () => {
       try {
-        const response = await fetch("http://localhost:3000/tasks");
+        const response = await fetch("http://localhost:3000/api/tasks");
         if (!response.ok) {
-          throw new Error("Network response was not ok.");
+          console.log(new Error("Failed to fetch tasks"));
         }
         const data = await response.json();
         setTasks(data);
@@ -83,7 +83,7 @@ function App() {
       }
     };
 
-    fetchTasks();
+    fetchTasks().catch((error) => console.error(error));
   }, []);
 
   if (isLoading) return <p>Loading tasks...</p>;
@@ -99,6 +99,7 @@ function App() {
           <div className="">
             <input
               type="text"
+              value={taskTitle}
               className="w-full border border-gray-300 rounded p-2"
               placeholder="Add todo"
               onChange={(e) => setTaskTitle(e.target.value)}

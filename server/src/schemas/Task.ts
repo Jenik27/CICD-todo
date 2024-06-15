@@ -2,6 +2,7 @@ import mongoose from 'mongoose';
 import { Schema } from 'mongoose'
 
 export const TaskSchema = new Schema({
+  _id: { type: Number, required: true },
   title: { type: String, required: true },
   description: { type: String, required: false },
   status: { type: String, required: true },

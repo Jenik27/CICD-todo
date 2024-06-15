@@ -12,6 +12,7 @@ export const createTask = async (
     res.status(200).json(savedTask);
   } catch (error: Error | any) {
     res.status(400).json({ message: error.message });
+    console.log(error)
   }
 };
 
@@ -33,5 +34,6 @@ export const deleteTask = async (
     res.status(200).json(task);
   } catch (error: Error | any) {
     res.status(400).json({ message: error.message });
+    console.log(error)
   }
 };

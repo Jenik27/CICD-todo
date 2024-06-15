@@ -1,11 +1,11 @@
 interface TaskProps {
-  id: number;
+  _id: string;
   title: string;
   description?: string; // Optional description
-  completed: boolean;
+  status: "pending" | "completed";
 }
 
-const Task = ({ task, onDelete }: { task: TaskProps, onDelete: (id: number) => void }) => {
+const Task = ({ task, onDelete }: { task: TaskProps, onDelete: (id: string) => void }) => {
   return (
     <li className="flex justify-between items-center p-2 border-b border-gray-300">
       <span>{task.title}</span>
@@ -13,7 +13,7 @@ const Task = ({ task, onDelete }: { task: TaskProps, onDelete: (id: number) => v
         <button className="bg-blue-600 text-white p-2 rounded hover:bg-blue-700">
           Edit
         </button>
-        <button className="bg-red-600 text-white p-2 rounded hover:bg-red-700" onClick={() => onDelete(task.id)}>
+        <button className="bg-red-600 text-white p-2 rounded hover:bg-red-700" onClick={() => onDelete(task._id)}>
           Delete
         </button>
       </div>
