@@ -25,7 +25,7 @@ function App() {
         status: "pending",
       };
 
-      const response = await fetch("http://localhost:3000/api/tasks", {
+      const response = await fetch("http://ec2-50-19-185-65.compute-1.amazonaws.com/api/tasks", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -51,7 +51,7 @@ function App() {
 
   const deleteTask = async (id: string) => {
     try {
-      const response = await fetch(`http://localhost:3000/api/tasks/${id}`, {
+      const response = await fetch(`http://ec2-50-19-185-65.compute-1.amazonaws.com/api/tasks/${id}`, {
         method: "DELETE",
       });
 
@@ -69,7 +69,7 @@ function App() {
   useEffect(() => {
     const fetchTasks = async () => {
       try {
-        const response = await fetch("http://localhost:3000/api/tasks");
+        const response = await fetch("http://ec2-50-19-185-65.compute-1.amazonaws.com/api/tasks");
         if (!response.ok) {
           console.log(new Error("Failed to fetch tasks"));
         }
